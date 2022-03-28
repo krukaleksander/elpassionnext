@@ -29,7 +29,7 @@ export default async function searchUserByName(
     followers: dataUsers.followers,
     following: dataUsers.following,
     location: dataUsers.location,
-    avantar: dataUsers.avatar_url,
+    avatar: dataUsers.avatar_url,
     type: "user",
   });
   //   return res.status(200).json(dataUsers);
