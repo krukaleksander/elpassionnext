@@ -43,8 +43,20 @@ export default async function searchUser(
       return responseRepo;
     })
   );
-
-  return res.status(200).json(repoData);
+  // na tym etapie mamy userData i repoData
+  const userDataMapped = userData.map((user: any) => {
+    return {
+      id: user.id,
+      login: user.login,
+      name: user.name,
+      followers: user.followers,
+      following: user.following,
+      location: user.location,
+      avantar: user.avatar_url,
+      type: "user",
+    };
+  });
+  return res.status(200).json(userDataMapped);
 }
 
 //zapytać o repozytoria, zapytać o userów, posortować i zwrócić
