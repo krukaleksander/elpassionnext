@@ -17,24 +17,38 @@ export default async function searchUser(
   });
 
   let { data: randomResponseUsers } = await requestWithAuth("GET /users");
- 
+  let { data: randomResponseRepos } = await requestWithAuth("GET /users");
 
-  return res.status(200).json(
-    randomResponseUsers.map((user: any): PersonData => {
-      const { id, login, name, followers, following, location, avatar_url } =
-        user;
-      return {
-        id,
-        login,
-        name,
-        followers,
-        following,
-        location,
-        avatar: avatar_url,
-        type: "user",
-      };
-    })
-  );
+  const randomUsers = randomResponseUsers.map((user: any): PersonData => {
+    const { id, login, name, followers, following, location, avatar_url } =
+      user;
+    return {
+      id,
+      login,
+      name,
+      followers,
+      following,
+      location,
+      avatar: avatar_url,
+      type: "user",
+    };
+  });
+
+  const randomRepos = randomResponseRepos.map(async (repo: any) => {
+    const { id, full_name, description, stargazers_url, languages_url } = repo;
+    return {
+      id,
+      full_name,
+      description,
+      stars: 0,
+      languages: { JS: 200 },
+      updated_on: "10.03.2022",
+      type: "repo",
+    };
+  });
+  console.log(randomRepos);
+
+  return res.status(200).json(randomUsers);
 }
 
 //zapytać o repozytoria, zapytać o userów, posortować i zwrócić
