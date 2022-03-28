@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 const { createTokenAuth } = require("@octokit/auth-token");
 
 const { request } = require("@octokit/request");
+let arrayOfReadyClients = [];
 
 export default async function searchUser(
   req: NextApiRequest,
@@ -15,46 +16,19 @@ export default async function searchUser(
       hook: auth.hook,
     },
   });
-
-  let { data: randomResponseUsers } = await requestWithAuth("GET /users");
-  let { data: randomResponseRepos } = await requestWithAuth(
-    "GET /repositories"
+  const data = await requestWithAuth("GET /users").then(
+    (data: { data: any }) => {
+      return data.data;
+    }
   );
-  const randomUsers = randomResponseUsers.map((user: any): PersonData => {
-    const { id, login, name, followers, following, location, avatar_url } =
-      user;
-    return {
-      id,
-      login,
-      name,
-      followers,
-      following,
-      location,
-      avatar: avatar_url,
-      type: "user",
-    };
-  });
-
-  const getUserDetails = async (user: any) => {
-    const { id } = user;
-    let { data: randomUserData } = await requestWithAuth(`GET /users/${id}`);
-    console.log(randomUserData);
-  };
-
-  const randomRepos = randomResponseRepos.map(async (repo: any) => {
-    const { id, full_name, description, stargazers_url, languages_url } = repo;
-    return {
-      id,
-      full_name,
-      description,
-      stars: 0,
-      languages: { JS: 200 },
-      updated_on: "10.03.2022",
-      type: "repo",
-    };
-  });
-
-  return res.status(200).json(randomUsers);
+  const userData = await Promise.all(
+    data.map(async (client) => {
+      const { login } = client;
+      let { data: responseUser } = await requestWithAuth(`GET /users/${login}`);
+      return responseUser;
+    })
+  );
+  return res.status(200).json(userData);
 }
 
 //zapytać o repozytoria, zapytać o userów, posortować i zwrócić
