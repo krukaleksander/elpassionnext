@@ -8,7 +8,7 @@ export default async function searchUser(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const auth = createTokenAuth("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");
+  const auth = createTokenAuth("TWOJ_KLUCZ");
   const authentication = await auth();
 
   const requestWithAuth = request.defaults({
@@ -43,7 +43,7 @@ export default async function searchUser(
       return responseRepo;
     })
   );
-  // na tym etapie mamy userData i repoData
+
   const userDataMapped = userData.map((user: any) => {
     return {
       id: user.id,
@@ -74,7 +74,6 @@ export default async function searchUser(
   );
 }
 
-//zapytać o repozytoria, zapytać o userów, posortować i zwrócić
 interface PersonData {
   id: number;
   login: string;
