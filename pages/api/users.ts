@@ -8,7 +8,7 @@ export default async function searchUser(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const auth = createTokenAuth("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");
+  const auth = createTokenAuth("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");
   const authentication = await auth();
 
   const requestWithAuth = request.defaults({
@@ -16,19 +16,35 @@ export default async function searchUser(
       hook: auth.hook,
     },
   });
-  const data = await requestWithAuth("GET /users").then(
+  const dataUsers = await requestWithAuth("GET /users").then(
     (data: { data: any }) => {
       return data.data;
     }
   );
   const userData = await Promise.all(
-    data.map(async (client) => {
+    dataUsers.map(async (client: any) => {
       const { login } = client;
       let { data: responseUser } = await requestWithAuth(`GET /users/${login}`);
       return responseUser;
     })
   );
-  return res.status(200).json(userData);
+
+  const dataRepos = await requestWithAuth("GET /repositories").then(
+    (data: { data: any }) => {
+      return data.data;
+    }
+  );
+  const repoData = await Promise.all(
+    dataRepos.map(async (repo: any) => {
+      const { id } = repo;
+      let { data: responseRepo } = await requestWithAuth(
+        `GET /repositories/${id}`
+      );
+      return responseRepo;
+    })
+  );
+
+  return res.status(200).json(repoData);
 }
 
 //zapytać o repozytoria, zapytać o userów, posortować i zwrócić
