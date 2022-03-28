@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+const { createTokenAuth } = require("@octokit/auth-token");
 
 const { request } = require("@octokit/request");
 
@@ -6,28 +7,20 @@ export default async function searchUser(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const randomResponseUsers = await request("GET /users", {});
-  const randomResponseRepos = await request("GET /repositories/", {
-    repository_id: 42,
-  });
-  const randomUsersData = randomResponseUsers.data;
-  const randomReposData = randomResponseRepos.data;
+  const auth = createTokenAuth("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");
+  const authentication = await auth();
 
-  const randomReposResult = randomReposData.map(async (repo: any) => {
-    const { id, full_name, description, stargazers_url, languages_url } = repo;
-    return {
-      id,
-      full_name,
-      description,
-      stars: 0,
-      languages: { JS: 200 },
-      updated_on: "10.03.2022",
-      type: "repo",
-    };
+  const requestWithAuth = request.defaults({
+    request: {
+      hook: auth.hook,
+    },
   });
-  console.log(randomReposResult);
+
+  let { data: randomResponseUsers } = await requestWithAuth("GET /users");
+ 
+
   return res.status(200).json(
-    randomUsersData.map((user: any): PersonData => {
+    randomResponseUsers.map((user: any): PersonData => {
       const { id, login, name, followers, following, location, avatar_url } =
         user;
       return {
