@@ -129,7 +129,7 @@ function Search() {
                           <div>{item.description}</div>
                           <div style={{display: "flex", alignItems: "center"}}>
                             <StarOutlineIcon/> {item.stars} Updated on{" "}
-                            {item.updated_on}
+                            {item.updated_on.slice(0,10)}
                           </div>
                         </>
                       }
