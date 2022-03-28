@@ -9,7 +9,7 @@ export default async function searchUser(
   res: NextApiResponse
 ) {
   const searchString = req.query.search;
-  const auth = createTokenAuth("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");
+  const auth = createTokenAuth("TWOJ_KLUCZ");
   const authentication = await auth();
 
   const requestWithAuth = request.defaults({
