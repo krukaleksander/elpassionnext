@@ -56,7 +56,22 @@ export default async function searchUser(
       type: "user",
     };
   });
-  return res.status(200).json(userDataMapped);
+  const repoDataMapped = repoData.map((user: any) => {
+    return {
+      id: user.id,
+      full_name: user.full_name,
+      description: user.description,
+      stars: user.stargazers_count,
+      languages: user.language,
+      updated_on: user.updated_at,
+      type: "repo",
+    };
+  });
+  return res.status(200).json(
+    [...userDataMapped, ...repoDataMapped].sort(function (a, b) {
+      return a.id - b.id;
+    })
+  );
 }
 
 //zapytać o repozytoria, zapytać o userów, posortować i zwrócić
