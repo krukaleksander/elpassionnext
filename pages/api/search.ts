@@ -77,7 +77,78 @@ export default async function searchUser(
       })
     );
   } else {
-    return res.status(200).json({ searching: searchString });
+    //here
+    const dataUsers = await requestWithAuth("GET /search/users", {
+      q: searchString,
+    }).then((data: { data: any }) => {
+      return data.data["items"];
+    });
+    let usersToFetch = [];
+    if (dataUsers.length > 20) {
+      usersToFetch = dataUsers.slice(0, 20);
+    } else {
+      usersToFetch = dataUsers;
+    }
+    const userData = await Promise.all(
+      usersToFetch.map(async (client: any) => {
+        const { login } = client;
+        let { data: responseUser } = await requestWithAuth(
+          `GET /users/${login}`
+        );
+        return responseUser;
+      })
+    );
+
+    const userDataMapped = userData.map((user: any) => {
+      return {
+        id: user.id,
+        login: user.login,
+        name: user.name,
+        followers: user.followers,
+        following: user.following,
+        location: user.location,
+        avantar: user.avatar_url,
+        type: "user",
+      };
+    });
+
+    const dataRepos = await requestWithAuth("GET /search/repositories", {
+      q: searchString,
+    }).then((data: { data: any }) => {
+      return data.data["items"];
+    });
+    let reposToFetch = [];
+    if (dataRepos.length > 20) {
+      reposToFetch = dataRepos.slice(0, 20);
+    } else {
+      reposToFetch = dataRepos;
+    }
+    const repoData = await Promise.all(
+      reposToFetch.map(async (repo: any) => {
+        const { id } = repo;
+        let { data: responseRepo } = await requestWithAuth(
+          `GET /repositories/${id}`
+        );
+        return responseRepo;
+      })
+    );
+    const repoDataMapped = repoData.map((user: any) => {
+      return {
+        id: user.id,
+        full_name: user.full_name,
+        description: user.description,
+        stars: user.stargazers_count,
+        languages: user.language,
+        updated_on: user.updated_at,
+        type: "repo",
+      };
+    });
+
+    return res.status(200).json(
+      [...userDataMapped, ...repoDataMapped].sort(function (a, b) {
+        return a.id - b.id;
+      })
+    );
   }
 }
 
