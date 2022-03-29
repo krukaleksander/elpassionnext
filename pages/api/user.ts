@@ -9,7 +9,7 @@ export default async function searchUserByName(
 ) {
   const searchString = req.query.login;
   const auth = createTokenAuth(process.env.API_KEY);
-  const authentication = await auth();
+  await auth();
 
   const requestWithAuth = request.defaults({
     request: {

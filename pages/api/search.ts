@@ -19,7 +19,7 @@ export default async function searchUser(
 ) {
   const searchString = req.query.search;
   const auth = createTokenAuth(process.env.API_KEY);
-  const authentication = await auth();
+  await auth();
   let totalCount = 0;
   const requestWithAuth = request.defaults({
     request: {
