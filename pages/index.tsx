@@ -25,10 +25,12 @@ import {
 } from "@material-ui/core";
 import { flexbox } from "@mui/system";
 import SearchAppBar from "../components/search-app-bar";
+//import { PersonOrRepoData } from "type"
 import { useRouter } from "next/router";
 import { RepoData, PersonData } from "./api/search";
 import { ListItemButton, ListItemIcon } from "@mui/material";
-
+import GithubList from "../components/list";
+type PersonOrRepoData = PersonData | RepoData;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -39,10 +41,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-type PersonOrRepoData = PersonData | RepoData;
-const getData = async (query: string): Promise<PersonOrRepoData[]> =>
+interface Result{
+  total_count: number;
+  items: PersonOrRepoData[];
+}
+const getData = async (query: string): Promise<Result> =>
   await (
-    await fetch(`http://localhost:3001/api/search?search=${query}`)
+    await fetch(`http://localhost:3000/api/search?search=${query}`)
   ).json();
 const getFakeData = async (query: string): Promise<PersonOrRepoData[]> => {
   return Promise.resolve([
@@ -76,16 +81,22 @@ function Search() {
   const classes = useStyles();
   const [search, setSearch] = React.useState("");
   // w tablicy mam albo PersonData albp RepoData - union
-  const [result, setResult] = React.useState<PersonOrRepoData[]>([]);
+  const [result, setResult] = React.useState<Result | null>(null);
+  const [totalCount, setTotalCount] =React.useState()
 
   const handleSearch = (event: any) => {
     setSearch(event.target.value);
   };
-  useEffect(() => setSearch(query as string), [query]);
+  useEffect(() => setSearch(query as string || ''), [query]);
   useEffect(() => {
+    if(!search){
+      setError(false);
+      setResult(null);
+      return;
+    }
      setLoading(true);
      setError(false);
-     setResult([]);
+     setResult(null);
      getData(search)
        .then((result) => setResult(result))
        .catch(() => setError(true))
@@ -100,53 +111,9 @@ function Search() {
         <Grid container justifyContent={"center"}>
           <CircularProgress color="inherit"/>
         </Grid>}
-        <List
-          sx={{ width: "100%", margin: "auto", bgcolor: "background.paper" }}
-        >
-          
-          {!!result &&
-            result.map((item) => (
-              <>
-                {item.type === "user" && (
-                  <ListItem alignItems="flex-start">
-                    <ListItemButton
-                      onClick={() => router.push(`/users/${item.login}`)}
-                    >
-                      <ListItemAvatar>
-                        <Avatar alt={item.login} src={item.avatar} />
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={item.name}
-                        secondary={item.login}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                )}
-                {item.type === "repo" && (
-                  <ListItem alignItems="flex-start" sx={{ margin: "0 16px" }}>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <SourceIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={item.full_name}
-                      secondary={
-                        <>
-                          <div>{item.description}</div>
-                          <div style={{display: "flex", alignItems: "center"}}>
-                            <StarOutlineIcon/> {item.stars} Updated on{" "}
-                            {item.updated_on.slice(0,10)}
-                          </div>
-                        </>
-                      }
-                    />
-                  </ListItem>
-                )}
-                <Divider />
-              </>
-            ))}
-        </List>
+        {result?.total_count !== undefined && <Typography>{result?.total_count} results</Typography>}
+        <GithubList personOrRepoList={result?.items || []} />
+        
       </Container>
     </>
   );
