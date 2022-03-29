@@ -10,7 +10,7 @@ export default async function searchUser(
   const searchString = req.query.search;
   const auth = createTokenAuth(process.env.API_KEY);
   const authentication = await auth();
-
+  let totalCount = 0;
   const requestWithAuth = request.defaults({
     request: {
       hook: auth.hook,
@@ -83,6 +83,7 @@ export default async function searchUser(
     const dataUsers = await requestWithAuth("GET /search/users", {
       q: searchString,
     }).then((data: { data: InterfaceSearchUsers }) => {
+      totalCount += data.data["total_count"];
       return data.data["items"];
     });
     let usersToFetch = [];
@@ -119,6 +120,7 @@ export default async function searchUser(
     const dataRepos = await requestWithAuth("GET /search/repositories", {
       q: searchString,
     }).then((data: { data: InterfaceSearchRepos }) => {
+      totalCount += data.data["total_count"];
       return data.data["items"];
     });
     let reposToFetch = [];
@@ -148,11 +150,12 @@ export default async function searchUser(
       };
     });
 
-    return res.status(200).json(
-      [...userDataMapped, ...repoDataMapped].sort(function (a, b) {
+    return res.status(200).json({
+      total_count: totalCount,
+      items: [...userDataMapped, ...repoDataMapped].sort(function (a, b) {
         return a.id - b.id;
-      })
-    );
+      }),
+    });
   }
 }
 
