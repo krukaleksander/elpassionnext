@@ -109,7 +109,7 @@ export default async function searchUser(
         followers: user.followers,
         following: user.following,
         location: user.location,
-        avantar: user.avatar_url,
+        avatar: user.avatar_url,
         type: "user",
       };
     });
@@ -154,7 +154,7 @@ export default async function searchUser(
   }
 }
 
-interface PersonData {
+export interface PersonData {
   id: number;
   login: string;
   name: string;
@@ -165,7 +165,7 @@ interface PersonData {
   type: "user";
 }
 
-interface RepoData {
+export interface RepoData {
   id: number;
   full_name: string;
   description: string;
