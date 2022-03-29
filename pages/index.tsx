@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
 type PersonOrRepoData = PersonData | RepoData;
 const getData = async (query: string): Promise<PersonOrRepoData[]> =>
   await (
-    await fetch(`http://localhost:3000/api/search?search=${query}`)
+    await fetch(`http://localhost:3001/api/search?search=${query}`)
   ).json();
 const getFakeData = async (query: string): Promise<PersonOrRepoData[]> => {
   return Promise.resolve([
@@ -83,15 +83,15 @@ function Search() {
   };
   useEffect(() => setSearch(query as string), [query]);
   useEffect(() => {
-    setLoading(true);
-    setError(false);
-    setResult([]);
-    getData(search)
-      .then((result) => setResult(result))
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, [search]);
-
+     setLoading(true);
+     setError(false);
+     setResult([]);
+     getData(search)
+       .then((result) => setResult(result))
+       .catch(() => setError(true))
+       .finally(() => setLoading(false));
+   }, [search]);
+ 
   return (
     <>
       <SearchAppBar value={search} onChange={handleSearch} />
@@ -103,6 +103,7 @@ function Search() {
         <List
           sx={{ width: "100%", margin: "auto", bgcolor: "background.paper" }}
         >
+          
           {!!result &&
             result.map((item) => (
               <>
