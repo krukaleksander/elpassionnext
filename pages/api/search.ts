@@ -23,7 +23,7 @@ export default async function searchUser(
       }
     );
     const userData = await Promise.all(
-      dataUsers.map(async (client: any) => {
+      dataUsers.map(async (client: InterfaceUserResponse) => {
         const { login } = client;
         let { data: responseUser } = await requestWithAuth(
           `GET /users/${login}`
@@ -170,4 +170,30 @@ interface RepoData {
   languages: {};
   updated_on: string;
   type: "repo";
+}
+
+interface InterfaceUserResponse {
+  login: string;
+  id: number;
+  node_id: string;
+  avatar_url: string;
+  gravatar_id: string;
+  url: string;
+  html_url: string;
+  followers_url: string;
+  following_url: string;
+  gists_url: string;
+  starred_url: string;
+  subscriptions_url: string;
+  organizations_url: string;
+  repos_url: string;
+  events_url: string;
+  received_events_url: string;
+  type: UserType;
+  site_admin: boolean;
+}
+
+enum UserType {
+  Organization = "Organization",
+  User = "User",
 }
