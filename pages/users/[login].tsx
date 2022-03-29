@@ -33,7 +33,7 @@ function Login() {
     if (!loginString) {
       return;
     }
-    getUser(loginString).then((result) => setUser(result));
+    fakeGetUser(loginString).then((result) => setUser(result));
   }, [login]);
   return (
     <>

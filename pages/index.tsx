@@ -86,7 +86,7 @@ function Search() {
     setLoading(true);
     setError(false);
     setResult([]);
-    getData(search)
+    getFakeData(search)
       .then((result) => setResult(result))
       .catch(() => setError(true))
       .finally(() => setLoading(false));

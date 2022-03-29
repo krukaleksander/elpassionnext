@@ -90,13 +90,13 @@ export default function SearchAppBar({
         <ThemeProvider theme={darkTheme}>
           <AppBar position="static">
             <Toolbar>
-              <GitHubIcon
+              <a href = "/"><GitHubIcon
                 size="large"
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
                 sx={{ mr: 2 }}
-              />
+              /></a>
 
               <Typography
                 variant="h6"
