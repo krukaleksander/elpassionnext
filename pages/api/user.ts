@@ -1,14 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 const { createTokenAuth } = require("@octokit/auth-token");
-
+import { ApiKey } from "./apiKey";
 const { request } = require("@octokit/request");
 let arrayOfReadyClients = [];
 
-export default async function searchUser(
+export default async function searchUserByName(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const auth = createTokenAuth("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");
+  const searchString = req.query.login;
+  const auth = createTokenAuth(ApiKey);
   const authentication = await auth();
 
   const requestWithAuth = request.defaults({
@@ -16,22 +17,24 @@ export default async function searchUser(
       hook: auth.hook,
     },
   });
-  const data = await requestWithAuth("GET /users").then(
+  const dataUsers = await requestWithAuth(`GET /users/${searchString}`).then(
     (data: { data: any }) => {
       return data.data;
     }
   );
-  const userData = await Promise.all(
-    data.map(async (client) => {
-      const { login } = client;
-      let { data: responseUser } = await requestWithAuth(`GET /users/${login}`);
-      return responseUser;
-    })
-  );
-  return res.status(200).json(userData);
+  return res.status(200).json({
+    id: dataUsers.id,
+    login: dataUsers.login,
+    name: dataUsers.name,
+    followers: dataUsers.followers,
+    following: dataUsers.following,
+    location: dataUsers.location,
+    avantar: dataUsers.avatar_url,
+    type: "user",
+  });
+  //   return res.status(200).json(dataUsers);
 }
 
-//zapytać o repozytoria, zapytać o userów, posortować i zwrócić
 interface PersonData {
   id: number;
   login: string;
