@@ -1,6 +1,6 @@
 import { ListItem, ListItemButton, ListItemAvatar, Avatar, ListItemText } from "@mui/material";
 import { useRouter } from "next/router";
-import { PersonData } from "../pages/api/search";
+import { PersonData } from "../pages/api/types";
 
 interface ItemProps {
   item: PersonData;
