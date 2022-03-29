@@ -80,10 +80,9 @@ export default async function searchUser(
       })
     );
   } else {
-    //here
     const dataUsers = await requestWithAuth("GET /search/users", {
       q: searchString,
-    }).then((data: { data: any }) => {
+    }).then((data: { data: InterfaceSearchUsers }) => {
       return data.data["items"];
     });
     let usersToFetch = [];
@@ -208,7 +207,7 @@ export interface InterfaceRepoResponse {
   name: string;
   full_name: string;
   private: boolean;
-  owner: Owner;
+  owner: ownerRepoResponse;
   html_url: string;
   description: null | string;
   fork: boolean;
@@ -251,7 +250,7 @@ export interface InterfaceRepoResponse {
   deployments_url: string;
 }
 
-export interface Owner {
+export interface ownerRepoResponse {
   login: string;
   id: number;
   node_id: string;
@@ -421,5 +420,33 @@ export interface Owner {
   events_url: string;
   received_events_url: string;
   type: string;
+  site_admin: boolean;
+}
+
+export interface InterfaceSearchUsers {
+  total_count: number;
+  incomplete_results: boolean;
+  items: ItemSearchUser[];
+}
+
+export interface ItemSearchUser {
+  login: string;
+  id: number;
+  node_id: string;
+  avatar_url: string;
+  gravatar_id: string;
+  url: string;
+  html_url: string;
+  followers_url: string;
+  subscriptions_url: string;
+  organizations_url: string;
+  repos_url: string;
+  received_events_url: string;
+  type: string;
+  score: number;
+  following_url: string;
+  gists_url: string;
+  starred_url: string;
+  events_url: string;
   site_admin: boolean;
 }
