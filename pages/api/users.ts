@@ -8,7 +8,7 @@ export default async function searchUser(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const auth = createTokenAuth("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");
+  const auth = createTokenAuth("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");
   const authentication = await auth();
 
   const requestWithAuth = request.defaults({
