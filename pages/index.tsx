@@ -10,6 +10,8 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import SourceIcon from "@mui/icons-material/Source";
+import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import {
   AppBar,
@@ -93,7 +95,11 @@ function Search() {
   return (
     <>
       <SearchAppBar value={search} onChange={handleSearch} />
-      <Container maxWidth="sm" style={{ marginTop: "16px" }}>
+      <Container maxWidth="sm" style={{ marginTop: "16px"}}>
+        {isLoading && 
+        <Grid container justifyContent={"center"}>
+          <CircularProgress color="inherit"/>
+        </Grid>}
         <List
           sx={{ width: "100%", margin: "auto", bgcolor: "background.paper" }}
         >
