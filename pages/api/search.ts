@@ -47,18 +47,20 @@ export default async function searchUser(
       })
     );
 
-    const userDataMapped = userData.map((user: PersonData) => {
-      return {
-        id: user.id,
-        login: user.login,
-        name: user.name,
-        followers: user.followers,
-        following: user.following,
-        location: user.location,
-        avatar: user.avatar_url,
-        type: "user",
-      };
-    });
+    const userDataMapped = userData.map(
+      (user: InterfaceOneUser): PersonData => {
+        return {
+          id: user.id,
+          login: user.login,
+          name: user.name,
+          followers: user.followers,
+          following: user.following,
+          location: user.location,
+          avatar: user.avatar_url,
+          type: "user",
+        };
+      }
+    );
     const repoDataMapped = repoData.map((user: any) => {
       return {
         id: user.id,
@@ -271,4 +273,39 @@ export interface Owner {
 export enum Type {
   Organization = "Organization",
   User = "User",
+}
+
+interface InterfaceOneUser {
+  login: string;
+  id: number;
+  node_id: string;
+  avatar_url: string;
+  gravatar_id: string;
+  url: string;
+  html_url: string;
+  followers_url: string;
+  following_url: string;
+  gists_url: string;
+  starred_url: string;
+  subscriptions_url: string;
+  organizations_url: string;
+  repos_url: string;
+  events_url: string;
+  received_events_url: string;
+  type: string;
+  site_admin: boolean;
+  name: string;
+  company: string;
+  blog: string;
+  location: string;
+  email: null;
+  hireable: boolean;
+  bio: string;
+  twitter_username: null;
+  public_repos: number;
+  public_gists: number;
+  followers: number;
+  following: number;
+  created_at: Date;
+  updated_at: Date;
 }
