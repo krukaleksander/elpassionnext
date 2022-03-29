@@ -6,7 +6,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import SourceIcon from "@mui/icons-material/Source";
-import { RepoData } from "../pages/api/search";
+import { RepoData } from "../pages/api/types";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 
 interface ItemProps {

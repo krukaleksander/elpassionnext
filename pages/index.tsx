@@ -27,7 +27,7 @@ import { flexbox } from "@mui/system";
 import SearchAppBar from "../components/search-app-bar";
 //import { PersonOrRepoData } from "type"
 import { useRouter } from "next/router";
-import { RepoData, PersonData } from "./api/search";
+import { RepoData, PersonData } from "./api/types";
 import { ListItemButton, ListItemIcon } from "@mui/material";
 import GithubList from "../components/list";
 type PersonOrRepoData = PersonData | RepoData;
