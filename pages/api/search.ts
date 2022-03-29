@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 const { createTokenAuth } = require("@octokit/auth-token");
 require("dotenv").config();
 const { request } = require("@octokit/request");
-let arrayOfReadyClients = [];
 
 export default async function searchUser(
   req: NextApiRequest,
