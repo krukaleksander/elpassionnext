@@ -92,7 +92,7 @@ export default async function searchUser(
       usersToFetch = dataUsers;
     }
     const userData = await Promise.all(
-      usersToFetch.map(async (client: any) => {
+      usersToFetch.map(async (client: InterfaceUserResponse) => {
         const { login } = client;
         let { data: responseUser } = await requestWithAuth(
           `GET /users/${login}`
@@ -101,22 +101,24 @@ export default async function searchUser(
       })
     );
 
-    const userDataMapped = userData.map((user: any) => {
-      return {
-        id: user.id,
-        login: user.login,
-        name: user.name,
-        followers: user.followers,
-        following: user.following,
-        location: user.location,
-        avatar: user.avatar_url,
-        type: "user",
-      };
-    });
+    const userDataMapped = userData.map(
+      (user: InterfaceOneUser): PersonData => {
+        return {
+          id: user.id,
+          login: user.login,
+          name: user.name,
+          followers: user.followers,
+          following: user.following,
+          location: user.location,
+          avatar: user.avatar_url,
+          type: "user",
+        };
+      }
+    );
 
     const dataRepos = await requestWithAuth("GET /search/repositories", {
       q: searchString,
-    }).then((data: { data: any }) => {
+    }).then((data: { data: InterfaceSearchRepos }) => {
       return data.data["items"];
     });
     let reposToFetch = [];
@@ -126,7 +128,7 @@ export default async function searchUser(
       reposToFetch = dataRepos;
     }
     const repoData = await Promise.all(
-      reposToFetch.map(async (repo: any) => {
+      reposToFetch.map(async (repo: InterfaceOneRepository) => {
         const { id } = repo;
         let { data: responseRepo } = await requestWithAuth(
           `GET /repositories/${id}`
@@ -134,14 +136,14 @@ export default async function searchUser(
         return responseRepo;
       })
     );
-    const repoDataMapped = repoData.map((user: any) => {
+    const repoDataMapped = repoData.map((repo: InterfaceOneRepository) => {
       return {
-        id: user.id,
-        full_name: user.full_name,
-        description: user.description,
-        stars: user.stargazers_count,
-        languages: user.language,
-        updated_on: user.updated_at,
+        id: repo.id,
+        full_name: repo.full_name,
+        description: repo.description,
+        stars: repo.stargazers_count,
+        languages: repo.language,
+        updated_on: repo.updated_at,
         type: "repo",
       };
     });
@@ -447,6 +449,121 @@ export interface ItemSearchUser {
   following_url: string;
   gists_url: string;
   starred_url: string;
+  events_url: string;
+  site_admin: boolean;
+}
+
+export interface InterfaceSearchRepos {
+  total_count: number;
+  incomplete_results: boolean;
+  items: ItemSearchRepos[];
+}
+
+export interface ItemSearchRepos {
+  id: number;
+  node_id: string;
+  name: string;
+  full_name: string;
+  owner: OwnerSearchResponse;
+  private: boolean;
+  html_url: string;
+  description: string;
+  fork: boolean;
+  url: string;
+  created_at: Date;
+  updated_at: Date;
+  pushed_at: Date;
+  homepage: string;
+  size: number;
+  stargazers_count: number;
+  watchers_count: number;
+  language: string;
+  forks_count: number;
+  open_issues_count: number;
+  master_branch: string;
+  default_branch: string;
+  score: number;
+  archive_url: string;
+  assignees_url: string;
+  blobs_url: string;
+  branches_url: string;
+  collaborators_url: string;
+  comments_url: string;
+  commits_url: string;
+  compare_url: string;
+  contents_url: string;
+  contributors_url: string;
+  deployments_url: string;
+  downloads_url: string;
+  events_url: string;
+  forks_url: string;
+  git_commits_url: string;
+  git_refs_url: string;
+  git_tags_url: string;
+  git_url: string;
+  issue_comment_url: string;
+  issue_events_url: string;
+  issues_url: string;
+  keys_url: string;
+  labels_url: string;
+  languages_url: string;
+  merges_url: string;
+  milestones_url: string;
+  notifications_url: string;
+  pulls_url: string;
+  releases_url: string;
+  ssh_url: string;
+  stargazers_url: string;
+  statuses_url: string;
+  subscribers_url: string;
+  subscription_url: string;
+  tags_url: string;
+  teams_url: string;
+  trees_url: string;
+  clone_url: string;
+  mirror_url: string;
+  hooks_url: string;
+  svn_url: string;
+  forks: number;
+  open_issues: number;
+  watchers: number;
+  has_issues: boolean;
+  has_projects: boolean;
+  has_pages: boolean;
+  has_wiki: boolean;
+  has_downloads: boolean;
+  archived: boolean;
+  disabled: boolean;
+  visibility: string;
+  license: LicenseSearchReponse;
+}
+
+export interface LicenseSearchReponse {
+  key: string;
+  name: string;
+  url: string;
+  spdx_id: string;
+  node_id: string;
+  html_url: string;
+}
+
+export interface OwnerSearchResponse {
+  login: string;
+  id: number;
+  node_id: string;
+  avatar_url: string;
+  gravatar_id: string;
+  url: string;
+  received_events_url: string;
+  type: string;
+  html_url: string;
+  followers_url: string;
+  following_url: string;
+  gists_url: string;
+  starred_url: string;
+  subscriptions_url: string;
+  organizations_url: string;
+  repos_url: string;
   events_url: string;
   site_admin: boolean;
 }
