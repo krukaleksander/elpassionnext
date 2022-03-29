@@ -31,24 +31,3 @@ export default async function searchUserByName(
     type: "user",
   });
 }
-
-interface PersonData {
-  id: number;
-  login: string;
-  name: string;
-  followers: number;
-  following: number;
-  location: string;
-  avatar: string;
-  type: "user";
-}
-
-interface RepoData {
-  id: number;
-  full_name: string;
-  description: string;
-  stars: number;
-  languages: {};
-  updated_on: string;
-  type: "repo";
-}
