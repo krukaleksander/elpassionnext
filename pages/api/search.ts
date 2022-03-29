@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 const { createTokenAuth } = require("@octokit/auth-token");
-import { ApiKey } from "./apiKey";
-
+require("dotenv").config();
 const { request } = require("@octokit/request");
 let arrayOfReadyClients = [];
 
@@ -10,7 +9,7 @@ export default async function searchUser(
   res: NextApiResponse
 ) {
   const searchString = req.query.search;
-  const auth = createTokenAuth(ApiKey);
+  const auth = createTokenAuth(process.env.API_KEY);
   const authentication = await auth();
 
   const requestWithAuth = request.defaults({
