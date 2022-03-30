@@ -7,8 +7,9 @@ import {
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import SearchAppBar from "../../components/search-app-bar";
-import { PersonData } from "../api/search";
+import { PersonData } from "../api/types";
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+
 const getUser = async (login: string): Promise<PersonData> => {
   return await (await fetch(`/api/user?login=${login}`)).json();
 };

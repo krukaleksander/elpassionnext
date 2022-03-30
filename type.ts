@@ -1,0 +1,2 @@
+
+type PersonOrRepoData = PersonData | RepoData;
