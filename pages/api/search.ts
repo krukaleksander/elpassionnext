@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import AuthFn from "./auth";
 import {
   InterfaceOneRepository,
   InterfaceOneUser,
@@ -9,23 +10,14 @@ import {
   PersonData,
   RepoData,
 } from "./types";
-const { createTokenAuth } = require("@octokit/auth-token");
-require("dotenv").config();
-const { request } = require("@octokit/request");
 
 export default async function searchUser(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const requestWithAuth = await AuthFn();
   const searchString = req.query.search;
-  const auth = createTokenAuth(process.env.API_KEY);
-  await auth();
   let totalCount = 0;
-  const requestWithAuth = request.defaults({
-    request: {
-      hook: auth.hook,
-    },
-  });
   if (searchString.length < 1) {
     const dataUsers = await requestWithAuth("GET /users").then(
       (data: { data: InterfaceUserResponse }) => {
