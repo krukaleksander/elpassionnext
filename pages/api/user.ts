@@ -1,21 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import AuthFn from "./auth";
 import { InterfaceOneUser } from "./types";
-const { createTokenAuth } = require("@octokit/auth-token");
-require("dotenv").config();
 const { request } = require("@octokit/request");
 export default async function searchUserByName(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const requestWithAuth = await AuthFn();
   const searchString = req.query.login;
-  const auth = createTokenAuth(process.env.API_KEY);
-  await auth();
-
-  const requestWithAuth = request.defaults({
-    request: {
-      hook: auth.hook,
-    },
-  });
   const dataUsers = await requestWithAuth(`GET /users/${searchString}`).then(
     (data: { data: InterfaceOneUser }) => {
       return data.data;
